@@ -1,6 +1,9 @@
-import Discord, { RichEmbed } from 'discord.js'
+import Discord from 'discord.js'
 import { logger } from 'utility/logger'
 import fs from 'fs'
+import HelpCommand from 'commands/public/HelpCommand'
+import ListCommand from 'commands/public/ListCommand'
+import PlayCommand from 'commands/public/PlayCommand'
 
 interface TextObject {
   [key: string]: any
@@ -21,7 +24,6 @@ export class DiscordServer {
     this.channels = {}
     this.authors = []
     this.stories = {}
-
     this.login()
   }
 
@@ -60,41 +62,22 @@ export class DiscordServer {
       const content = msg.content
 
       if (!content.startsWith(this.prefix)) return false
+      if (msg.channel.id !== this.channels.CHANNEL_BOT.id && msg.channel.type !== 'dm') return false
 
       const command = content.split(' ')[0].split(this.prefix)[1]
-      const data = content.split(this.prefix + command)[1].trim().split(' ')
-      let valid = false
-      const embed = new RichEmbed()
-        .setColor('GREEN')
+      const data = content.split(this.prefix + command)[1].trim()
 
       if (command === 'list') {
-        valid = true
-        embed.setTitle('Available Stories')
-
-        const storiesObj = this.stories
-        Object.keys(storiesObj).forEach(function (key) {
-          embed.addField(key, storiesObj[key].join('\n'))
-        })
+        ListCommand(msg, data)
       }
 
       if (command === 'help') {
-        valid = true
-        embed.setTitle('Lists all the bots commands')
-          .addField(`${this.prefix}play x`, 'Starts the specified story ( x ) in PMs')
-          .addField(`${this.prefix}help`, 'Displays this help command')
-          .addField(`${this.prefix}list`, 'Lists all available stories')
+        console.log('firing')
+        HelpCommand(msg, data)
       }
 
-      if (command === 'play') {
-        valid = true
-        embed.setTitle('Start story')
-        embed.setDescription(`Starting story: ${data}`)
-      }
-
-      if (valid) {
-        msg.channel.send(embed).catch(e => {
-          logger.log('error', e.message, ...[e])
-        })
+      if (command === 'play' && data.length > 0) {
+        PlayCommand(msg, data)
       }
 
       return true
@@ -152,5 +135,17 @@ export class DiscordServer {
     })
 
     return folders
+  }
+
+  public getPrefix (): string {
+    return this.prefix
+  }
+
+  public getStories (): any {
+    return this.stories
+  }
+
+  public getAuthors (): any {
+    return this.authors
   }
 }
