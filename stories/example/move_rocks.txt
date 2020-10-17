@@ -1,0 +1,5 @@
+[Text]
+You attempt the move the rocks, but they're just too heavy! 
+
+[Options]
+Explore the tunnel => explore_tunnel.txt

@@ -1,0 +1,4 @@
+node_modules/
+dist/
+start-devel.sh
+model/
