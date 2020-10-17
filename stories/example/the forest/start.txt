@@ -1,0 +1,6 @@
+[Text]
+You and three lads are having a cheeky pint around a fire, when out of the darkness comes up to you a dog
+
+[Options]
+Pet the dog => pet_dog.txt
+Howl => howl_at_dog.txt

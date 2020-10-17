@@ -1,8 +1,8 @@
-import Discord from 'discord.js'
+import Discord, { RichEmbed } from 'discord.js'
 import { logger } from 'utility/logger'
 import fs from 'fs'
 
-interface ChannelObject {
+interface TextObject {
   [key: string]: any
 }
 
@@ -10,7 +10,8 @@ export class DiscordServer {
   private static instance: DiscordServer
   private readonly client: Discord.Client
   private readonly prefix: string
-  private readonly channels: ChannelObject
+  private readonly channels: TextObject
+  private stories: TextObject
   private authors: any[]
   private guild: Discord.Guild | undefined
 
@@ -19,6 +20,7 @@ export class DiscordServer {
     this.prefix = process.env.BOT_PREFIX ?? '??'
     this.channels = {}
     this.authors = []
+    this.stories = {}
 
     this.login()
   }
@@ -61,22 +63,36 @@ export class DiscordServer {
 
       const command = content.split(' ')[0].split(this.prefix)[1]
       const data = content.split(this.prefix + command)[1].trim().split(' ')
-      let message = ''
+      let valid = false
+      const embed = new RichEmbed()
+        .setColor('GREEN')
 
       if (command === 'list') {
-        message = 'YOOO here is some DATA'
+        valid = true
+        embed.setTitle('Available Stories')
+
+        const storiesObj = this.stories
+        Object.keys(storiesObj).forEach(function (key) {
+          embed.addField(key, storiesObj[key].join('\n'))
+        })
       }
 
       if (command === 'help') {
-        message = 'YOO, DIFFERENT DATA!'
+        valid = true
+        embed.setTitle('Lists all the bots commands')
+          .addField(`${this.prefix}play x`, 'Starts the specified story ( x ) in PMs')
+          .addField(`${this.prefix}help`, 'Displays this help command')
+          .addField(`${this.prefix}list`, 'Lists all available stories')
       }
 
       if (command === 'play') {
-        message = `Starting ${data}`
+        valid = true
+        embed.setTitle('Start story')
+        embed.setDescription(`Starting story: ${data}`)
       }
 
-      if (message !== '') {
-        msg.reply(message).catch(e => {
+      if (valid) {
+        msg.channel.send(embed).catch(e => {
           logger.log('error', e.message, ...[e])
         })
       }
@@ -116,15 +132,25 @@ export class DiscordServer {
   }
 
   private loadAuthors (): void {
-    const path = `${process.env.PWD}/stories`
+    this.authors = this.loadDir()
+  }
+
+  private loadStories (): void {
+    const stories: TextObject = {}
+
+    this.authors.forEach(author => {
+      stories[author] = this.loadDir(author)
+    })
+
+    this.stories = stories
+  }
+
+  private loadDir (sub: string = ''): any[] {
+    const path = `${process.env.PWD}/stories/${sub}`
     const folders = fs.readdirSync(path).filter(function (file) {
       return fs.statSync(path + '/' + file).isDirectory()
     })
 
-    this.authors = folders
-  }
-
-  private loadStories (): void {
-    // todo
+    return folders
   }
 }
