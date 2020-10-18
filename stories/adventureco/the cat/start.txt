@@ -3,4 +3,4 @@ A cute cat comes up to you and `meows`
 
 [Options]
 Pet the cat => pet_the_cat.txt
-Pat the cat => pat_the_cat.txt
+Meow back => meow_at_cat.txt
