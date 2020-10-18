@@ -4,6 +4,8 @@ import fs from 'fs'
 import HelpCommand from 'commands/public/HelpCommand'
 import ListCommand from 'commands/public/ListCommand'
 import PlayCommand from 'commands/public/PlayCommand'
+import { clearAllStories } from 'models/init/clearAllStories'
+import { insertStory } from 'models/init/insertStory'
 
 interface TextObject {
   [key: string]: any
@@ -49,6 +51,8 @@ export class DiscordServer {
       this.loadAuthors()
       this.loadStories()
       this.messageListener()
+      this.clearAllStories()
+      this.loadAllStories()
     }).catch(e => {
       logger.log('error', e.message)
     })
@@ -78,6 +82,10 @@ export class DiscordServer {
 
       if (command === 'play' && data.length > 0) {
         PlayCommand(msg, data)
+      }
+
+      if (msg.channel.type === 'dm') {
+        // do player command
       }
 
       return true
@@ -147,5 +155,80 @@ export class DiscordServer {
 
   public getAuthors (): any {
     return this.authors
+  }
+
+  private clearAllStories (): void {
+    clearAllStories().catch(e => {
+      logger.log('error', e.message, ...[e])
+    })
+  }
+
+  private loadAllStories (): void {
+    const paths: any[] = []
+    Object.keys(this.stories).forEach((key) => {
+      var stories = this.stories[key]
+
+      stories.forEach((story: string) => {
+        const path = `${process.env.PWD}/stories/${key}/${story}`
+
+        paths.push(...this.getTextPaths(path))
+      })
+    })
+
+    this.loadStoryText(paths)
+  }
+
+  private getTextPaths (directory: string): any[] {
+    const paths: any[] = []
+    fs.readdirSync(directory).forEach(function (file) {
+      paths.push(`${directory}/${file}`)
+    })
+
+    return paths
+  }
+
+  private loadStoryText (paths: any[]): void {
+    paths.forEach((path: string) => {
+      fs.readFile(path, 'utf8', function (err, data) {
+        if (err != null) {
+          logger.log('error', err)
+        }
+
+        if (data.length > 0 && data != null) {
+          var textMatcher = new RegExp(/(?<=\[Text]\n)(.*)(?:=\n\[Options|\n\n)/ms)
+          var optionMatcher = new RegExp(/(?<=\[Options]\n)(.*)(\n)/ms)
+
+          var textGroup = data.match(textMatcher)
+          var optionsGroup = data.match(optionMatcher)
+
+          var text = ''
+          var options: TextObject = {}
+
+          if (textGroup != null) {
+            text = textGroup[0]
+
+            let raw = path.split(/\/(?=[^\/]+$)/)
+            const page = raw[1].trim().split('.txt')[0]
+            raw = raw[0].split(/\/(?=[^\/]+$)/)
+            const story = raw[1].trim()
+            raw = raw[0].split(/\/(?=[^\/]+$)/)
+            const author = raw[1].trim()
+
+            if (optionsGroup != null) {
+              var optionString = String(optionsGroup[0])
+              optionString.split('\n').forEach((option: string) => {
+                if (option.length > 1) {
+                  options[option.split('=>')[0].trim()] = `${author}/${story}/${option.split('=>')[1].trim().split('.txt')[0]}`
+                }
+              })
+            }
+
+            insertStory(`${author}/${story}/${page}`, `${author}/${story}`, page, text, options).catch(e => {
+              logger.log('error', e.message, ...[e])
+            })
+          }
+        }
+      })
+    })
   }
 }

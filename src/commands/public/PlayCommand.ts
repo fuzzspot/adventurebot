@@ -1,6 +1,7 @@
 import { RichEmbed, Message } from 'discord.js'
 import { DiscordServer } from 'DiscordServer'
 import { logger } from 'utility/logger'
+import { startStory } from 'models/commands/startStory'
 
 export default function execute (message: Message, data: string): void {
   const prefix = DiscordServer.getInstance().getPrefix()
@@ -9,7 +10,6 @@ export default function execute (message: Message, data: string): void {
     .setColor('GREEN')
 
   embed.setTitle('Start story')
-  embed.setDescription(`Starting story: ${data}! PM'ing shorty!`)
 
   let requestedAuthor = ''
   let requestedStory = data
@@ -26,23 +26,29 @@ export default function execute (message: Message, data: string): void {
 
   let storyExists = false
   let multipleStories = false
+  let author = ''
   const storiesObj = DiscordServer.getInstance().getStories()
   Object.keys(storiesObj).forEach(function (key) {
-    embed.addField(key, storiesObj[key].join('\n'))
-
     storiesObj[key].forEach((story: string) => {
       if (requestedStory === story) {
         if (storyExists) {
           multipleStories = true
         }
         storyExists = true
+        author = key
       }
     })
   })
 
   if (storyExists) {
     if (!multipleStories) {
+      embed.setDescription(`Starting **${data}** by **${author}**! Stories are played in DM, I'll send you a message in just a second!`)
+
       message.author.send('Hi!').catch(e => {
+        logger.log('error', e.message, ...[e])
+      })
+
+      startStory(message.author.id, `${author}/${data}`).catch(e => {
         logger.log('error', e.message, ...[e])
       })
     } else {
