@@ -3,8 +3,17 @@ import { DiscordServer } from 'DiscordServer'
 import { logger } from 'utility/logger'
 import { startStory } from 'models/commands/startStory'
 import { loadPage } from 'models/commands/loadPage'
-import { stringify } from 'querystring'
 
+/**
+ * Start the play command
+ *
+ * TL;DR:
+ * - Loads story
+ * - Tracks story for user
+ *
+ * @param message
+ * @param data
+ */
 export default function execute (message: Message, data: string): void {
   const prefix = DiscordServer.getInstance().getPrefix()
   const knownAuthors: any[] = DiscordServer.getInstance().getAuthors()

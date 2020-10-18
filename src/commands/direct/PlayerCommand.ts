@@ -5,6 +5,12 @@ import { loadPage } from 'models/commands/loadPage'
 import { startStory } from 'models/commands/startStory'
 import { trackAttempt } from 'models/commands/trackAttempt'
 
+/**
+ * Listen for user commands and load applicable stories
+ *
+ * @param msg
+ * @param data
+ */
 export default async function execute (msg: Message, data: string): Promise<void> {
   try {
     const currentStory = await getUserStory(msg.author.id)
