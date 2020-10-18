@@ -1,0 +1,32 @@
+version: 2
+jobs:
+  build:
+    machine: true
+    working_directory: ~/app
+    steps:
+      - checkout
+      - run:
+          name: "Update Node.js and npm"
+          command: |
+            curl -sSL "https://nodejs.org/dist/v14.14.0/node-v14.14.0-linux-x64.tar.xz" | sudo tar --strip-components=2 -xJ -C /usr/local/bin/ node-v11.10.0-linux-x64/bin/node
+            curl https://www.npmjs.com/install.sh | sudo bash
+      - run:
+          name: install npm packages
+          command: |
+            npm i
+            npm install --global webpack-cli webpack
+      - run:
+          name: build
+          command: |
+            webpack
+            mv stories dist/
+            mv package.json dist/
+            tar cvzf dist.tar.gz dist/
+      - run:
+          name: Transfer tar
+          command: |
+            scp dist.tar.gz $USER@$SERVER:/home/$USER/bots/$APPNAME
+      - run:
+          name: Deploy
+          command: |
+            ssh -p $PORT -t $USER@$SERVER "bash /home/$USER/bots/$APPNAME/deploy.sh"
