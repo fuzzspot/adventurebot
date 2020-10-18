@@ -4,6 +4,7 @@ import fs from 'fs'
 import HelpCommand from 'commands/public/HelpCommand'
 import ListCommand from 'commands/public/ListCommand'
 import PlayCommand from 'commands/public/PlayCommand'
+import PlayerCommand from 'commands/direct/PlayerCommand'
 import { clearAllStories } from 'models/init/clearAllStories'
 import { insertStory } from 'models/init/insertStory'
 
@@ -65,6 +66,10 @@ export class DiscordServer {
     this.client.on('message', msg => {
       const content = msg.content
 
+      if (msg.channel.type === 'dm') {
+        PlayerCommand(msg, content)
+      }
+
       if (!content.startsWith(this.prefix)) return false
       if (msg.channel.id !== this.channels.CHANNEL_BOT.id && msg.channel.type !== 'dm') return false
 
@@ -82,10 +87,6 @@ export class DiscordServer {
 
       if (command === 'play' && data.length > 0) {
         PlayCommand(msg, data)
-      }
-
-      if (msg.channel.type === 'dm') {
-        // do player command
       }
 
       return true
@@ -243,11 +244,11 @@ export class DiscordServer {
           if (textGroup != null) {
             text = textGroup[0]
 
-            let raw = path.split(/\/(?=[^\/]+$)/)
+            let raw = path.split(/\/(?=[^/]+$)/)
             const page = raw[1].trim().split('.txt')[0]
-            raw = raw[0].split(/\/(?=[^\/]+$)/)
+            raw = raw[0].split(/\/(?=[^/]+$)/)
             const story = raw[1].trim()
-            raw = raw[0].split(/\/(?=[^\/]+$)/)
+            raw = raw[0].split(/\/(?=[^/]+$)/)
             const author = raw[1].trim()
 
             if (optionsGroup != null) {

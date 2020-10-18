@@ -9,7 +9,7 @@ import { Db } from 'mongodb'
  */
 export async function startStory (userId: string, story: string): Promise<any> {
   const mongo: Db = MongoHelper.getDatabase()
-  const dbObj = await mongo.collection('playing').insertOne({ userId: userId, story: story })
+  const dbObj = await mongo.collection('playing').updateOne({ _id: userId }, { $set: { story: story } }, { upsert: true })
 
   return dbObj
 }
