@@ -4,10 +4,10 @@ import { logger } from 'utility/logger'
 import { getUserStory } from 'models/commands/getUserStory'
 import { loadPage } from 'models/commands/loadPage'
 import { startStory } from 'models/commands/startStory'
+import { trackAttempt } from 'models/commands/trackAttempt'
 
-export default async function execute (message: Message, data: string): Promise<void> {
+export default async function execute (msg: Message, data: string): Promise<void> {
   try {
-    const msg = message
     const currentStory = await getUserStory(msg.author.id)
     const storyObj = await loadPage(currentStory.story)
     const options: any = storyObj.options
@@ -23,16 +23,22 @@ export default async function execute (message: Message, data: string): Promise<
           compressed.push(key)
         })
 
-        embed.setTitle('Option not found')
-          .setDescription('Couldn\'t find option in list')
-          .addField('Options', compressed.join('\n'))
+        if (currentStory.tries < 3) {
+          embed.setTitle('Option not found')
+            .setDescription('Couldn\'t find option in list')
+            .addField('Options', compressed.join('\n'))
 
-        msg.channel.send(embed).catch(e => {
-          logger.log('error', e.message, ...[e])
-        })
+          msg.channel.send(embed).catch(e => {
+            logger.log('error', e.message, ...[e])
+          })
+
+          trackAttempt(msg.author.id).catch(e => {
+            logger.log('error', e.message, ...[e])
+          })
+        }
       }
     } else {
-      startStory(message.author.id, `${options[objectMatch]}`).catch(e => {
+      startStory(msg.author.id, `${options[objectMatch]}`).catch(e => {
         logger.log('error', e.message, ...[e])
       })
 
@@ -57,7 +63,7 @@ export default async function execute (message: Message, data: string): Promise<
           story.addField('Options', options.join('\n'))
         }
 
-        message.author.send(story).catch(e => {
+        msg.author.send(story).catch(e => {
           logger.log('error', e.message, ...[e])
         })
       }).catch(e => {
