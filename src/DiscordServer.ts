@@ -20,6 +20,7 @@ export class DiscordServer {
   private stories: TextObject
   private authors: any[]
   private guild: Discord.Guild | undefined
+  private readonly dirResolver: string | undefined
 
   private constructor () {
     this.client = new Discord.Client()
@@ -28,6 +29,15 @@ export class DiscordServer {
     this.authors = []
     this.stories = {}
     this.login()
+
+    if (process.env.MODE === 'development') {
+      this.dirResolver = process.env.PWD
+    } else {
+      this.dirResolver = process.env.ROOT_FOLDER
+    }
+
+    logger.log('info', process.env.MODE)
+    logger.log('info', this.dirResolver)
   }
 
   /**
@@ -67,7 +77,9 @@ export class DiscordServer {
       const content = msg.content
 
       if (msg.channel.type === 'dm') {
-        PlayerCommand(msg, content)
+        PlayerCommand(msg, content).catch(e => {
+          logger.log('error', e.message, ...[e])
+        })
       }
 
       if (!content.startsWith(this.prefix)) return false
@@ -149,7 +161,7 @@ export class DiscordServer {
    * @param sub options sub directory
    */
   private loadDir (sub: string = ''): any[] {
-    const path = `${process.env.PWD}/stories/${sub}`
+    const path = `${this.dirResolver}/stories/${sub}`
     const folders = fs.readdirSync(path).filter(function (file) {
       return fs.statSync(path + '/' + file).isDirectory()
     })
@@ -196,7 +208,7 @@ export class DiscordServer {
       var stories = this.stories[key]
 
       stories.forEach((story: string) => {
-        const path = `${process.env.PWD}/stories/${key}/${story}`
+        const path = `${this.dirResolver}/stories/${key}/${story}`
 
         paths.push(...this.getTextPaths(path))
       })
