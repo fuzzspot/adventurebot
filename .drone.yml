@@ -12,10 +12,11 @@ steps:
       - mv stories dist/
       - mv package.json dist/
       - tar cvzf dist.tar.gz dist/
-      - ls
-      - pwd
   - name: scp files
     image: appleboy/drone-scp
+    commands:
+      - ls
+      - pwd
     settings:
       host:
         from_secret: server_host
