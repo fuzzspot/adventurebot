@@ -5,6 +5,8 @@ jobs:
     working_directory: ~/app
     steps:
       - checkout
+      only:
+        - master
       - run:
           name: "Update Node.js and npm"
           command: |
@@ -29,4 +31,4 @@ jobs:
       - run:
           name: Deploy
           command: |
-            ssh -p $PORT -t $USER@$SERVER "bash /home/$USER/bots/$APPNAME/deploy.sh"
+            ssh -t $USER@$SERVER "bash /home/$USER/bots/$APPNAME/deploy.sh"
