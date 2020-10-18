@@ -2,7 +2,29 @@
 
 **What is this:**
 A ( not-inherently furry ) discord bot for telling interactive stories
-  
+
+## How to contribute a story
+Contributing a new story is easy! To start, create a new folder in `stories/`. Best practice here is to use your username like `adventureco`. Inside your folder, create a new folder for each story you wish to make ( like `the cave`! Inside each story folder there must be a `start.txt` file as this is what the bot looks for to initialize a story.
+
+Here is a quick example of story markup:
+```
+[Text]
+Story text goes here.
+
+It can be multiline
+
+[Options]
+Option text => link_to_page.txt
+```
+
+Every `page` needs a `[Text]` node and some text, but `[Options]` are optional
+
+Options are broken down into two parts:
+- The text that the user sees ( on the left of the pointer `=>` )
+- The page that the text links to ( on the right of the pointer `=>` )
+
+There are two example stories under stories/example to get you started! 
+
 ## Running
 For development:
 ```
@@ -19,10 +41,11 @@ npm run lint
  src
   │   MongoHelper.ts    # Our MongoDB helper
   │   start.ts          # App entry point
-  └───stories           # Where stories are kept
-      └───{{username}   # Folder to organize stories by username
-        └───{{story}}   # Where the story files are kept
   └───utility           # All our utility classes, like loggers
+  └───models            # Stores all database models for the bot
+ stories
+  └───username          # Top level username folder
+  └───└─story_name      # Story folder which houses the story assets
 
 ```
 

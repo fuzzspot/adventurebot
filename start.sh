@@ -13,5 +13,6 @@ export GUILD=''
 # Other
 export BOT_ACTIVITY=''
 export ROOT_FOLDER=''
+export MODE='development'
 
 npm run devel
