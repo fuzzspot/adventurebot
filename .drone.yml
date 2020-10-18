@@ -25,7 +25,7 @@ steps:
         from_secret: ssh_key
       port: 22
       target: /home/runner/bots/storybot
-      source: dist.tar.gz
+      source: /drone/src/dist.tar.gz
   - name: run commands
     image: appleboy/drone-ssh
     settings:
