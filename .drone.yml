@@ -14,9 +14,6 @@ steps:
       - tar cvzf dist.tar.gz dist/
   - name: scp files
     image: appleboy/drone-scp
-    commands:
-      - ls
-      - pwd
     settings:
       host:
         from_secret: server_host
@@ -26,7 +23,7 @@ steps:
         from_secret: ssh_key
       port: 22
       target: /home/runner/bots/storybot
-      source: /drone/src/dist.tar.gz
+      source: *.gz
   - name: run commands
     image: appleboy/drone-ssh
     settings:
