@@ -2,10 +2,10 @@ import { MongoHelper } from 'MongoHelper'
 import { Db } from 'mongodb'
 
 /**
- * Insert new user into database
+ * Track which story / page the user is on
  *
- * @param {String} userId the userId
- * @param {Date} added the date the role was aded
+ * @param userId user
+ * @param story story id
  */
 export async function startStory (userId: string, story: string): Promise<any> {
   const mongo: Db = MongoHelper.getDatabase()

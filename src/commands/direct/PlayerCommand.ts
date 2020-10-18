@@ -1,5 +1,4 @@
 import { RichEmbed, Message } from 'discord.js'
-import { DiscordServer } from 'DiscordServer'
 import { logger } from 'utility/logger'
 import { getUserStory } from 'models/commands/getUserStory'
 import { loadPage } from 'models/commands/loadPage'
