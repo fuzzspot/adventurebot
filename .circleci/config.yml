@@ -1,18 +1,26 @@
 version: 2
 jobs:
   build:
-    machine: true
+    docker:
+      - image: node:12.13.1-stretch-slim
     working_directory: ~/app
     branches:
       only:
-        - master
+        - main
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "b5:bb:a7:23:11:5e:64:89:ba:89:cd:9a:c2:ac:b0:e9"
       - run:
-          name: "Update Node.js and npm"
+          name: Check node version
           command: |
-            curl -sSL "https://nodejs.org/dist/v14.14.0/node-v14.14.0-linux-x64.tar.xz" | sudo tar --strip-components=2 -xJ -C /usr/local/bin/ node-v11.10.0-linux-x64/bin/node
-            curl https://www.npmjs.com/install.sh | sudo bash
+            node -v
+      - run:
+          name: Install packages 
+          command: |
+            DEBIAN_FRONTEND=noninteractive apt update -y
+            apt install openssh-client -y
       - run:
           name: install npm packages
           command: |
@@ -25,10 +33,11 @@ jobs:
             mv stories dist/
             mv package.json dist/
             tar cvzf dist.tar.gz dist/
+            ssh-keygen -F $SERVER >/dev/null || ssh-keyscan -H $SERVER >> ~/.ssh/known_hosts
       - run:
           name: Transfer tar
           command: |
-            scp dist.tar.gz $USER@$SERVER:/home/$USER/bots/$APPNAME
+            scp -i ~/.ssh/id_rsa* dist.tar.gz $USER@$SERVER:~/bots/$APPNAME
       - run:
           name: Deploy
           command: |
