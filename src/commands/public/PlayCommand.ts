@@ -2,6 +2,8 @@ import { RichEmbed, Message } from 'discord.js'
 import { DiscordServer } from 'DiscordServer'
 import { logger } from 'utility/logger'
 import { startStory } from 'models/commands/startStory'
+import { loadPage } from 'models/commands/loadPage'
+import { stringify } from 'querystring'
 
 export default function execute (message: Message, data: string): void {
   const prefix = DiscordServer.getInstance().getPrefix()
@@ -44,11 +46,31 @@ export default function execute (message: Message, data: string): void {
     if (!multipleStories) {
       embed.setDescription(`Starting **${data}** by **${author}**! Stories are played in DM, I'll send you a message in just a second!`)
 
-      message.author.send('Hi!').catch(e => {
+      startStory(message.author.id, `${author}/${data}/start`).catch(e => {
         logger.log('error', e.message, ...[e])
       })
 
-      startStory(message.author.id, `${author}/${data}`).catch(e => {
+      loadPage(`${author}/${data}/start`).then((doc: {_id: string, story: string, page: string, text: string, options: object}) => {
+        const name = doc.story
+        const options: any[] = []
+
+        Object.keys(doc.options).forEach(function (key) {
+          options.push(key)
+        })
+
+        const story = new RichEmbed()
+          .setColor('ORANGE')
+          .setTitle(`${name.split('/')[1]} by ${name.split('/')[0]}`)
+          .setDescription(doc.text)
+          .addField('Options', options.join('\n'))
+          .setFooter(`Page: ${doc.page}`)
+
+        console.log(doc)
+
+        message.author.send(story).catch(e => {
+          logger.log('error', e.message, ...[e])
+        })
+      }).catch(e => {
         logger.log('error', e.message, ...[e])
       })
     } else {

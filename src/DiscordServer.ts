@@ -122,10 +122,16 @@ export class DiscordServer {
     })
   }
 
+  /**
+   * Loads all authors
+   */
   private loadAuthors (): void {
     this.authors = this.loadDir()
   }
 
+  /**
+   * Loads all story names
+   */
   private loadStories (): void {
     const stories: TextObject = {}
 
@@ -136,6 +142,11 @@ export class DiscordServer {
     this.stories = stories
   }
 
+  /**
+   * Loads directory names
+   *
+   * @param sub options sub directory
+   */
   private loadDir (sub: string = ''): any[] {
     const path = `${process.env.PWD}/stories/${sub}`
     const folders = fs.readdirSync(path).filter(function (file) {
@@ -145,24 +156,39 @@ export class DiscordServer {
     return folders
   }
 
+  /**
+   * Return prefix
+   */
   public getPrefix (): string {
     return this.prefix
   }
 
+  /**
+   * Return current story names
+   */
   public getStories (): any {
     return this.stories
   }
 
+  /**
+   * Return current authors
+   */
   public getAuthors (): any {
     return this.authors
   }
 
+  /**
+   * Clear all stories from the DB
+   */
   private clearAllStories (): void {
     clearAllStories().catch(e => {
       logger.log('error', e.message, ...[e])
     })
   }
 
+  /**
+   * Load all story paths
+   */
   private loadAllStories (): void {
     const paths: any[] = []
     Object.keys(this.stories).forEach((key) => {
@@ -178,6 +204,11 @@ export class DiscordServer {
     this.loadStoryText(paths)
   }
 
+  /**
+   * Load all story text paths
+   *
+   * @param directory path to look for text files
+   */
   private getTextPaths (directory: string): any[] {
     const paths: any[] = []
     fs.readdirSync(directory).forEach(function (file) {
@@ -187,6 +218,11 @@ export class DiscordServer {
     return paths
   }
 
+  /**
+   * Load all story text and insert into DB
+   *
+   * @param paths paths to load txt from
+   */
   private loadStoryText (paths: any[]): void {
     paths.forEach((path: string) => {
       fs.readFile(path, 'utf8', function (err, data) {

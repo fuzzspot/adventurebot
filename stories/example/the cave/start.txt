@@ -1,5 +1,7 @@
 [Text]
-You are a dwarven miner. An earthquake has collapsed the mine, but an unfamiliar tunnel lies ahead of you. What do you do?
+You are a dwarven miner. An earthquake has collapsed the mine, but an unfamiliar tunnel lies ahead of you. 
+
+What do you do?
 
 [Options]
 Explore the tunnel => explore_tunnel.txt
