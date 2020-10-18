@@ -244,7 +244,7 @@ export class DiscordServer {
         }
 
         if (data.length > 0 && data != null) {
-          var textMatcher = new RegExp(/(?<=\[Text]\n)(.*)(?:=\n\[Options|\n\n)/ms)
+          var textMatcher = new RegExp(/^((?!\[Options]|\[Text]).)*$/ms)
           var optionMatcher = new RegExp(/(?<=\[Options]\n)(.*)(\n)/ms)
 
           var textGroup = data.match(textMatcher)

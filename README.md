@@ -15,6 +15,7 @@ It can be multiline
 
 [Options]
 Option text => link_to_page.txt
+
 ```
 
 Every `page` needs a `[Text]` node and some text, but `[Options]` are optional
@@ -23,7 +24,9 @@ Options are broken down into two parts:
 - The text that the user sees ( on the left of the pointer `=>` )
 - The page that the text links to ( on the right of the pointer `=>` )
 
-There are two example stories under stories/example to get you started! 
+There are two example stories under stories/example to get you started!
+
+**Notes:** Please ensure there is an empty new line at the end of your `page`! We use this to match sections in our regex search
 
 ## Running
 For development:

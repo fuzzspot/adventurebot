@@ -1,0 +1,6 @@
+[Text]
+A cute cat comes up to you and `meows`
+
+[Options]
+Pat the cat => pat_the_cat.txt
+Meow back => meow_at_cat.txt
