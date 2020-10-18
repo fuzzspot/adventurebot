@@ -1,5 +1,7 @@
-pipeline:
-  build:
+kind: pipeline
+name: default
+steps:
+  - name: build
     image: node:latest
     commands: 
       - mkdir dist
@@ -10,7 +12,7 @@ pipeline:
       - mv stories dist/
       - mv package.json dist/
       - tar cvzf dist.tar.gz dist/
-  scp files:
+  - name: scp files
     image: appleboy/drone-scp
     settings:
       host:
@@ -22,7 +24,7 @@ pipeline:
       port: 22
       target: /home/runner/bots/storybot
       source: dist.tar.gz
-  run commands:
+  - name: run commands
     image: appleboy/drone-ssh
     settings:
       host:
