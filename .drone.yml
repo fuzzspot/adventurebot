@@ -5,6 +5,7 @@ pipeline:
       - mkdir dist
       - npm i
       - npm run lint
+      - npm install --global webpack
       - webpack
       - mv stories dist/
       - mv package.json dist/
