@@ -1,0 +1,6 @@
+[Text]
+you are an engeneer on a new experimental faster than light ship.
+while you were sleeping the allarms were activated and the order to abbandon the ship was sent.
+you don't have thime to think about it you reach the emergency pods but a collapse traps you away from the others so you will be alone in your pod
+[options]
+eject the pod=>in_the_pod.txt
