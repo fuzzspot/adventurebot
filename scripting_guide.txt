@@ -1,0 +1,62 @@
+basic sintax elements
+	escape sequences
+		$$ escapes the $ simbol
+		${ escapes {
+		$} escapes }
+		// is used to write comments in the scripts
+	logic operators:
+		standard logic operators such as && || ^ ! are available, in absence op parentesis they follow the order they are written in the file
+		> >= < <= 
+	Math operators: 
+		standard math operators such as + - * / % are available, in absence op parentesis they follow the order they are written in the file
+	( and ) behave like most other languages
+	
+
+variables are by default string values. you can create flag or integer variables using $flag[name] or $int[name]
+$[variablename]=value allows to set the value of a variable
+$[variablename] allows to retrieve the value of a variable. if present in the story section of the file it will be replaced by it's value at runtime. example $[playername] will be shown as the player name
+$lock(condition) makes an option or a set of option selectable only if condition is true it is possible to introduce an hint on what is required to unlock the option using " "
+$unlock(conditon) similar to lock but makes an option or a set of option unselectable only if condition is true it is possible to introduce an hint on what is required to unlock the option using " "
+$lock_invisible(condition) similar to lock but the option won't appear on screen if not selectable and can't show hints
+$unlock_invisible(conditon) similar to unlock but the option won't appear on screen if not selectable and can't show hints
+{ and } can be used to group a set of option together. options grupped togheter will also all execute the instruction written between } and the next option
+{ and } must be on different lines from the option they group to both increase clarity and simplify parsing
+
+
+
+
+behaviour:	
+	variables can be altered in two moment:
+		1)at the opening of a file
+		2)when an option is choosen, just before opening the corresponding file.
+	unassigned variables take the values "" for strings 0 for integers and false for flags.
+	it is possible to divide a group of option in smaller groups on wich behave like standard groups. groups get processed in order from the primary group to subgrups to subsubgroup etc
+
+
+
+
+example of usage
+
+in the firs page:
+
+$[name]="robin hood"
+[Text]
+do you take your bow and arrows with you?
+[options]
+yes both => next_page.txt $flag[bow]=true $int[arrows]=20
+{
+yes the bow => next_page.txt $flag[bow]=true
+no i don't need them => next_page.txt $flag[bow]=false
+} $int[arrows]=0   // arrows is set to 0 for both options because they are part of a same group
+
+in next_page.txt:
+[Text]
+$[name] is walking in the forest when he sees a group of bandits
+[options]
+$unlock($flag[bow])"you should have taken your bow"
+{
+	lock($int[arrows]==0)"you forgot your arrows" shoot them with the bow => page1.txt	
+	try to shoot them but the bow has no arrows => page2.txt
+	run away => page3.txt $[reason]="coward"
+}
+unlock_invisible(!$flag[bow]) run away => page3.txt $[reason]="idiot has no weapon"

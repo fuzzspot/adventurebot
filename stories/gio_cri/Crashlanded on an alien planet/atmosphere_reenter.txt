@@ -1,0 +1,5 @@
+[Text]
+the pod is engulfed in flames the heat is not a problem thanks to the advanced heat shields of the pod but the noises of the supersonic bang and the retroboosters are extremely loudthis ship is designed for safety not confort after all.
+when the ship finally reaches the ground the impact isn't even as catastrophic as you initially though. you know nothing about what appened to the others but you hope that they to reached the planet surface.
+[options]
+on the alien planet=>on_the_alien_planet.txt

@@ -1,0 +1,5 @@
+[Text]
+you open the pod door not really caring to check the atmosphere composition after all it is not like you could remain inside. as the door opens and the air inside the pod mixes with the planet atmosphere you are relieved by the fact thatyou canbreathe normally instead of having your lungs filled with acid.
+the planet lukyly has an atmosphere really similar to heart you aren't really an expert on the matter but you definetly didn't expect it to be possible. maybe this is the reason why all the scientist on board seemed so much exited about this trip not that breaking the known laws of phisics and pass light speed wasn't exiting enough
+[options] 
+inspect the pod=>initial_inspection.txt

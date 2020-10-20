@@ -1,0 +1,5 @@
+[Text]
+the pod gets launched at hig speed outside the ship making sure that you are far away from any danger.looking back at the ship you see it explode it was the first working FTL ship it is unlikely that any other ship will be here in less than a year and the pod provide little more than a month of life support.
+at this point the pod would be little more than a tomb for you if it wasn't for a planet nearby, a planet oddly similar to earth. that planet must be the habitable planet you have eard of, the one your mission was sent to scan.maybe there is still a chance for you to survive.
+[options]
+atmosphere reenter=>atmosphere_reenter.txt
