@@ -10,9 +10,9 @@ import { Db } from 'mongodb'
  * @param text story text
  * @param options story options
  */
-export async function insertStory (_id: string, story: string, page: string, text: string, options: object): Promise<any> {
-  const mongo: Db = MongoHelper.getDatabase()
-  const dbObj = await mongo.collection('stories').insertOne({ _id: _id, story: story, page: page, text: text, options: options })
+export async function insertStory(_id: string, story: string, page: string, script: string, text: string, options: object): Promise<any> {
+    const mongo: Db = MongoHelper.getDatabase()
+    const dbObj = await mongo.collection('stories').insertOne({ _id: _id, story: story, page: page, script: script, text: text, options: options })
 
-  return dbObj
+    return dbObj
 }

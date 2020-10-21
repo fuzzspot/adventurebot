@@ -12,7 +12,7 @@ basic sintax elements
 	( and ) behave like most other languages
 	
 
-variables are by default string values. you can create flag or integer variables using $flag[name] or $int[name]
+variables are by default string values.
 $[variablename]=value allows to set the value of a variable
 $[variablename] allows to retrieve the value of a variable. if present in the story section of the file it will be replaced by it's value at runtime. example $[playername] will be shown as the player name
 $lock(condition) makes an option or a set of option selectable only if condition is true it is possible to introduce an hint on what is required to unlock the option using " "
@@ -43,20 +43,20 @@ $[name]="robin hood"
 [Text]
 do you take your bow and arrows with you?
 [options]
-yes both => next_page.txt $flag[bow]=true $int[arrows]=20
+yes both => next_page.txt $[bow]=true $[arrows]=20
 {
-yes the bow => next_page.txt $flag[bow]=true
-no i don't need them => next_page.txt $flag[bow]=false
-} $int[arrows]=0   // arrows is set to 0 for both options because they are part of a same group
+yes the bow => next_page.txt $[bow]=true
+no i don't need them => next_page.txt $[bow]=false
+} $[arrows]=0   // arrows is set to 0 for both options because they are part of a same group
 
 in next_page.txt:
 [Text]
 $[name] is walking in the forest when he sees a group of bandits
 [options]
-$unlock($flag[bow])"you should have taken your bow"
+$unlock($[bow])"you should have taken your bow"
 {
-	lock($int[arrows]==0)"you forgot your arrows" shoot them with the bow => page1.txt	
+	lock($[arrows]==0)"you forgot your arrows" shoot them with the bow => page1.txt	
 	try to shoot them but the bow has no arrows => page2.txt
 	run away => page3.txt $[reason]="coward"
 }
-unlock_invisible(!$flag[bow]) run away => page3.txt $[reason]="idiot has no weapon"
+unlock_invisible(!$[bow]) run away => page3.txt $[reason]="idiot has no weapon"
